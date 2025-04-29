@@ -1,89 +1,95 @@
 const juegos = [
-  { nombre: "GTA V", precio: 60 },
-  { nombre: "Call Of Duty", precio: 0 },
-  { nombre: "Minecraft", precio: 30 },
-  { nombre: "Fortnite", precio: 0 },
-  { nombre: "Assassin's Creed", precio: 70 }
-];  
-  
-let carrito = [];
-let total = 0;
-  
+  { nombre: 'GTA V', precio: 60 },
+  { nombre: 'Call Of Duty', precio: 0 },
+  { nombre: 'Minecraft', precio: 30 },
+  { nombre: 'Fortnite', precio: 0 },
+  { nombre: 'Assassins Creed', precio: 70 }
+]
+
+let carrito = []
+let total = 0
+
 function mostrarCatalogo() {
-  let mensaje = "🎮 Catálogo:\n";
-  juegos.forEach((juego, i) => {
-    mensaje += `${i + 1}. ${juego.nombre} - $${juego.precio}\n`;
-  });
-  alert(mensaje);
+  let mensaje = '🎮 ¡Bienvenido a la Tienda de Videojuegos!\n\n'
+  juegos.forEach(function(juego, i) {
+    mensaje += (i + 1) + '. ' + juego.nombre + ' - $' + juego.precio + '\n'
+  })
+  alert(mensaje)
 }
-  
+
 function agregarJuego() {
-  mostrarCatalogo();
-  let num = parseInt(prompt("Número del juego a agregar:"));
+  mostrarCatalogo()
+  let num = parseInt(prompt('📦 ¿Qué juego te gustaría agregar al carrito? Escribe el número:'))
   if (num >= 1 && num <= juegos.length) {
-    let juego = juegos[num - 1];
-    carrito.push(juego);
-    total += juego.precio;
-    alert(`✅ "${juego.nombre}" agregado.`);
-    verCarrito();
+    let juego = juegos[num - 1]
+    carrito.push(juego)
+    total += juego.precio
+    alert('✅ "' + juego.nombre + 'Fue agregado al carrito!')
+    verCarrito()
   } else {
-      alert("❌ Número inválido.");
+    alert('❌ Ese número no corresponde intentalo de nuevo.')
   }
 }
-  
+
 function verCarrito() {
   if (carrito.length === 0) {
-    alert("🛒 Carrito vacío.");
-    return;
+    alert('🛒 Tu carrito está vacío.')
+    return
   }
-  
-  let mensaje = "🛍️ Tu carrito:\n";
-  carrito.forEach((juego, i) => {
-     mensaje += `${i + 1}. ${juego.nombre} - $${juego.precio}\n`;
-  });
-  mensaje += `\n💰 Total: $${total}`;
-  alert(mensaje);
+
+  let mensaje = '🛍️ Estos son los juegos que agregaste:\n'
+  carrito.forEach(function(juego, i) {
+    mensaje += (i + 1) + '. ' + juego.nombre + ' - $' + juego.precio + '\n'
+  })
+  mensaje += '\n💰 Total sin descuento: $' + total
+  alert(mensaje)
 }
-  
+
 function finalizarCompra() {
   if (carrito.length === 0) {
-    alert("No hay nada en el carrito.");
-    return;
+    alert('😅 Aún no agregaste ningún juego.')
+    return
   }
-  
-  let descuento = total >= 100 ? 10 : 0;
-  let totalFinal = total;
-  if (descuento) totalFinal *= 0.9;
-  
-  let resumen = "✅ Compra final:\n";
-  carrito.forEach(juego => {
-    resumen += `- ${juego.nombre} - $${juego.precio}\n`;
-  });
-    resumen += `\nDescuento: ${descuento}%\nTotal: $${totalFinal.toFixed(2)}`;
-    alert(resumen);
-  }
-  
+
+  let descuento = 10
+  let totalFinal = total * 0.9
+
+  let resumen = '🎉 ¡Gracias por tu compra! Aquí está el resumen:\n'
+  carrito.forEach(function(juego) {
+    resumen += '- ' + juego.nombre + ' - $' + juego.precio + '\n'
+  })
+  resumen += '\n🎁 Descuento aplicado: ' + descuento + '%\n💳 Total a pagar: $' + totalFinal.toFixed(2) + '\n\n¡Disfruta de tus juegos! 🎮'
+  alert(resumen)
+}
+
 function iniciar() {
-  alert("🎮 Bienvenido a la tienda");
-  
-  let salir = false;
+  alert('👋 Hola Bienvenido a nuestra tienda de videojuegos')
+
+  let salir = false
   while (!salir) {
-  let opcion = prompt("Elige una opción:\n1. Ver catálogo\n2. Agregar juego\n3. Ver carrito\n4. Finalizar compra\n5. Salir");
-  
+    let opcion = prompt('¿Qué te gustaría hacer?\n\n1. Ver el catálogo\n2. Agregar un juego al carrito\n3. Ver el carrito\n4. Finalizar la compra\n5. Salir de la tienda')
+
     switch (opcion) {
-      case "1": mostrarCatalogo(); break;
-      case "2": agregarJuego(); break;
-      case "3": verCarrito(); break;
-      case "4": finalizarCompra(); break;
-      case "5":
-        alert("¡Gracias por tu visita!");
-        salir = true;
-        break;
+      case '1':
+        mostrarCatalogo()
+        break
+      case '2':
+        agregarJuego()
+        break
+      case '3':
+        verCarrito()
+        break
+      case '4':
+        finalizarCompra()
+        break
+      case '5':
+        alert('👋 ¡Gracias por visitarnos! Que tengas un gran día.')
+        salir = true
+        break
       default:
-        alert("Opción inválida.");
-      }
+        alert('❌ Opción no válida. Por favor, escribí un número del 1 al 5.')
     }
   }
-  
-  iniciar();
-  
+}
+
+iniciar()
