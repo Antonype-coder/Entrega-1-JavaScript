@@ -1,95 +1,143 @@
-const juegos = [
-  { nombre: 'GTA V', precio: 60 },
-  { nombre: 'Call Of Duty', precio: 0 },
-  { nombre: 'Minecraft', precio: 30 },
-  { nombre: 'Fortnite', precio: 0 },
-  { nombre: 'Assassins Creed', precio: 70 }
+function Juego(id, nombre, precio, imagen) {
+    this.id = id
+    this.nombre = nombre
+    this.precio = precio
+    this.imagen = imagen
+}
+
+const listaJuegos = [
+    new Juego(1, 'GTA V', 60, 'img/710425570360.webp'),
+    new Juego(2, 'Minecraft', 30, 'img/w=800,h=800,fit=pad.webp'),
+    new Juego(3, 'Fortnite', 0, 'img/eba818f4-972b-4e59-a05b-2a5619a25978.369ee4453c18af1d05961d910b6ebcd1.webp'),
+    new Juego(4, 'Call of Duty', 70, 'img/juego-call-of-duty-modern-warfare-iii-ps4-47875104723.webp'),
+    new Juego(5, 'FIFA 23', 55, 'img/Fifa-ps4-1.webp'),
+    new Juego(6, 'The Witcher 3', 40, 'img/videojuego-the-witcher-3-wild-hunt-playstation-4.webp'),
+    new Juego(7, 'Cyberpunk 2077', 50, 'img/Cyberpunk-2077.webp'),
+    new Juego(8, 'Red Dead Redemption 2', 60, 'img/1528501793-red-dead-redemption-2-ps4-cover.png'),
+    new Juego(9, 'Among Us', 5, 'img/71qMQTNLH7L._AC_UF1000,1000_QL80_.jpg'),
+    new Juego(10, 'Rocket League', 0, 'img/D_NQ_NP_882131-MLA45733841082_042021-O.webp')
 ]
 
 let carrito = []
 let total = 0
 
-function mostrarCatalogo() {
-  let mensaje = '🎮 ¡Bienvenido a la Tienda de Videojuegos!\n\n'
-  juegos.forEach(function(juego, i) {
-    mensaje += (i + 1) + '. ' + juego.nombre + ' - $' + juego.precio + '\n'
-  })
-  alert(mensaje)
+function guardarCarrito() {
+    localStorage.setItem('carrito', JSON.stringify(carrito))
+    localStorage.setItem('total', total.toString())
+    actualizarContador()
 }
 
-function agregarJuego() {
-  mostrarCatalogo()
-  let num = parseInt(prompt('📦 ¿Qué juego te gustaría agregar al carrito? Escribe el número:'))
-  if (num >= 1 && num <= juegos.length) {
-    let juego = juegos[num - 1]
-    carrito.push(juego)
-    total += juego.precio
-    alert('✅ "' + juego.nombre + 'Fue agregado al carrito!')
-    verCarrito()
-  } else {
-    alert('❌ Ese número no corresponde intentalo de nuevo.')
-  }
-}
-
-function verCarrito() {
-  if (carrito.length === 0) {
-    alert('🛒 Tu carrito está vacío.')
-    return
-  }
-
-  let mensaje = '🛍️ Estos son los juegos que agregaste:\n'
-  carrito.forEach(function(juego, i) {
-    mensaje += (i + 1) + '. ' + juego.nombre + ' - $' + juego.precio + '\n'
-  })
-  mensaje += '\n💰 Total sin descuento: $' + total
-  alert(mensaje)
-}
-
-function finalizarCompra() {
-  if (carrito.length === 0) {
-    alert('😅 Aún no agregaste ningún juego.')
-    return
-  }
-
-  let descuento = 10
-  let totalFinal = total * 0.9
-
-  let resumen = '🎉 ¡Gracias por tu compra! Aquí está el resumen:\n'
-  carrito.forEach(function(juego) {
-    resumen += '- ' + juego.nombre + ' - $' + juego.precio + '\n'
-  })
-  resumen += '\n🎁 Descuento aplicado: ' + descuento + '%\n💳 Total a pagar: $' + totalFinal.toFixed(2) + '\n\n¡Disfruta de tus juegos! 🎮'
-  alert(resumen)
-}
-
-function iniciar() {
-  alert('👋 Hola Bienvenido a nuestra tienda de videojuegos')
-
-  let salir = false
-  while (!salir) {
-    let opcion = prompt('¿Qué te gustaría hacer?\n\n1. Ver el catálogo\n2. Agregar un juego al carrito\n3. Ver el carrito\n4. Finalizar la compra\n5. Salir de la tienda')
-
-    switch (opcion) {
-      case '1':
-        mostrarCatalogo()
-        break
-      case '2':
-        agregarJuego()
-        break
-      case '3':
-        verCarrito()
-        break
-      case '4':
-        finalizarCompra()
-        break
-      case '5':
-        alert('👋 ¡Gracias por visitarnos! Que tengas un gran día.')
-        salir = true
-        break
-      default:
-        alert('❌ Opción no válida. Por favor, escribí un número del 1 al 5.')
+function cargarCarrito() {
+    const carritoGuardado = localStorage.getItem('carrito')
+    const totalGuardado = localStorage.getItem('total')
+    
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado)
+        total = parseFloat(totalGuardado) || 0
+        actualizarContador()
     }
-  }
 }
 
-iniciar()
+function limpiarStorage() {
+    localStorage.removeItem('carrito')
+    localStorage.removeItem('total')
+}
+
+function mostrarJuegos() {
+    const contenedorJuegos = document.getElementById('juegos')
+    contenedorJuegos.innerHTML = ''
+
+    listaJuegos.forEach(juego => {
+        const tarjetaJuego = `
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="${juego.imagen}" class="card-img-top" alt="${juego.nombre}">
+                    <div class="card-body">
+                        <h5 class="card-title">${juego.nombre}</h5>
+                        <p class="card-text">$${juego.precio}</p>
+                        <button class="btn btn-primary agregar" data-id="${juego.id}">
+                            Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `
+        contenedorJuegos.innerHTML += tarjetaJuego
+    })
+
+    document.querySelectorAll('.agregar').forEach(boton => {
+        boton.addEventListener('click', evento => {
+            const idJuego = parseInt(evento.target.dataset.id)
+            agregarAlCarrito(idJuego)
+        })
+    })
+}
+
+function agregarAlCarrito(id) {
+    const juegoSeleccionado = listaJuegos.find(juego => juego.id === id)
+    if (!juegoSeleccionado) return
+
+    carrito.push(juegoSeleccionado)
+    total += juegoSeleccionado.precio
+    guardarCarrito()
+    actualizarCarrito()
+    alert(`Agregaste ${juegoSeleccionado.nombre}`)
+}
+
+function actualizarCarrito() {
+    actualizarContador()
+    document.getElementById('total').textContent = total
+
+    const contenedorItems = document.getElementById('items')
+    contenedorItems.innerHTML = ''
+
+    if (carrito.length === 0) {
+        contenedorItems.innerHTML = '<p class="text-center">Carrito vacío</p>'
+    } else {
+        carrito.forEach(juego => {
+            contenedorItems.innerHTML += `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>${juego.nombre}</span>
+                    <span>$${juego.precio}</span>
+                </div>
+            `
+        })
+    }
+}
+
+function actualizarContador() {
+    document.getElementById('contador').textContent = carrito.length
+}
+
+function realizarCompra() {
+    if (carrito.length === 0) {
+        alert('Carrito vacío')
+        return
+    }
+    
+    alert(`Gracias por tu compra! Total: $${total}`)
+    carrito = []
+    total = 0
+    limpiarStorage()
+    actualizarCarrito()
+    mostrarSeccion('catalogo')
+}
+
+function mostrarSeccion(seccion) {
+    if (seccion === 'catalogo') {
+        document.getElementById('catalogo').classList.remove('d-none')
+        document.getElementById('carrito').classList.add('d-none')
+    } else {
+        document.getElementById('catalogo').classList.add('d-none')
+        document.getElementById('carrito').classList.remove('d-none')
+    }
+}
+
+document.getElementById('verCatalogo').addEventListener('click', () => mostrarSeccion('catalogo'))
+document.getElementById('verCarrito').addEventListener('click', () => mostrarSeccion('carrito'))
+document.getElementById('comprar').addEventListener('click', realizarCompra)
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarCarrito()
+    mostrarJuegos()
+})
