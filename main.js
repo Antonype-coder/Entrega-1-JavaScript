@@ -43,11 +43,33 @@ function limpiarStorage() {
     localStorage.removeItem('total')
 }
 
-function mostrarJuegos() {
+function filtrarJuegos() {
+    const busqueda = document.getElementById('buscador').value.toLowerCase()
+    const filtro = document.getElementById('filtroPrecio').value
+    
+    let juegosFiltrados = listaJuegos.filter(juego => 
+        juego.nombre.toLowerCase().includes(busqueda))
+    
+    switch(filtro) {
+        case 'menor-mayor':
+            juegosFiltrados.sort((a, b) => a.precio - b.precio)
+            break
+        case 'mayor-menor':
+            juegosFiltrados.sort((a, b) => b.precio - a.precio)
+            break
+        case 'gratis':
+            juegosFiltrados = juegosFiltrados.filter(juego => juego.precio === 0)
+            break
+    }
+    
+    mostrarJuegosFiltrados(juegosFiltrados)
+}
+
+function mostrarJuegosFiltrados(juegos) {
     const contenedorJuegos = document.getElementById('juegos')
     contenedorJuegos.innerHTML = ''
 
-    listaJuegos.forEach(juego => {
+    juegos.forEach(juego => {
         const tarjetaJuego = `
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
@@ -136,8 +158,10 @@ function mostrarSeccion(seccion) {
 document.getElementById('verCatalogo').addEventListener('click', () => mostrarSeccion('catalogo'))
 document.getElementById('verCarrito').addEventListener('click', () => mostrarSeccion('carrito'))
 document.getElementById('comprar').addEventListener('click', realizarCompra)
+document.getElementById('buscador').addEventListener('input', filtrarJuegos)
+document.getElementById('filtroPrecio').addEventListener('change', filtrarJuegos)
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarCarrito()
-    mostrarJuegos()
+    filtrarJuegos()
 })
